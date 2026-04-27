@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d1117">
+    <title>World Finance Hub</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0d1117;
+            color: #e6edf3;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        .header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f0b429;
+            letter-spacing: -0.02em;
+        }
+        .logo span { color: #58a6ff; }
+        .header-right {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+        .time-display { color: #8b949e; font-variant-numeric: tabular-nums; }
+        .time-display strong { color: #e6edf3; font-size: 1rem; }
+        .sessions { display: flex; gap: 6px; }
+        .session {
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid #30363d;
+            color: #8b949e;
+            background: rgba(139, 148, 158, 0.05);
+        }
+        .session.open {
+            background: rgba(63, 185, 80, 0.12);
+            color: #3fb950;
+            border-color: rgba(63, 185, 80, 0.4);
+        }
+        .container {
+            max-width: 1700px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        .section-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #8b949e;
+            margin: 18px 0 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #30363d, transparent);
+        }
+        .section-title:first-child { margin-top: 0; }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .card-header {
+            padding: 10px 14px;
+            border-bottom: 1px solid #30363d;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #f0b429;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: rgba(13, 17, 23, 0.4);
+        }
+        .briefing-card {
+            background: linear-gradient(135deg, #161b22 0%, #1a2030 100%);
+            border: 1px solid #30363d;
+            border-left: 3px solid #f0b429;
+            border-radius: 8px;
+            padding: 18px 22px;
+        }
+        .briefing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .briefing-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #f0b429;
+            letter-spacing: -0.01em;
+        }
+        .briefing-timestamp {
+            font-size: 0.75rem;
+            color: #8b949e;
+        }
+        .briefing-content {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+            line-height: 1.7;
+        }
+        .briefing-content h3 {
+            color: #58a6ff;
+            font-size: 0.78rem;
+            margin: 14px 0 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+        }
+        .briefing-content h3:first-child { margin-top: 0; }
+        .briefing-content p { margin-bottom: 8px; }
+        .briefing-content strong { color: #e6edf3; }
+        .briefing-content ul { margin-left: 20px; margin-bottom: 8px; }
+        .briefing-content li { margin-bottom: 4px; }
+        .footer {
+            text-align: center;
+            padding: 24px 16px;
+            color: #6e7681;
+            font-size: 0.75rem;
+            border-top: 1px solid #30363d;
+            margin-top: 24px;
+        }
+        .footer a { color: #58a6ff; text-decoration: none; }
+        @media (max-width: 1100px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .grid-3, .grid-2 { grid-template-columns: 1fr; }
+            .header { padding: 10px 14px; }
+            .container { padding: 12px; }
+            .logo { font-size: 1.1rem; }
+            .briefing-title { font-size: 1rem; }
+            .sessions { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="logo">World Finance <span>Hub</span></div>
+    <div class="header-right">
+        <div class="time-display">
+            <strong id="current-time">--:--:--</strong> MST
+        </div>
+        <div class="sessions" id="sessions">
+            <div class="session" id="session-sydney">SYD</div>
+            <div class="session" id="session-tokyo">TYO</div>
+            <div class="session" id="session-london">LDN</div>
+            <div class="session" id="session-newyork">NYC</div>
+        </div>
+    </div>
+</div>
+
+<!-- Ticker Tape -->
+<div class="tradingview-widget-container">
+    <div class="tradingview-widget-container__widget"></div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+    {
+        "symbols": [
+            {"proName": "FX:EURUSD", "title": "EUR/USD"},
+            {"proName": "FX:GBPUSD", "title": "GBP/USD"},
+            {"proName": "FX:USDJPY", "title": "USD/JPY"},
+            {"proName": "FX:USDCAD", "title": "USD/CAD"},
+            {"proName": "FX:AUDUSD", "title": "AUD/USD"},
+            {"proName": "FX:NZDUSD", "title": "NZD/USD"},
+            {"proName": "FX:USDCHF", "title": "USD/CHF"},
+            {"proName": "FX:EURJPY", "title": "EUR/JPY"},
+            {"proName": "FX:GBPJPY", "title": "GBP/JPY"},
+            {"proName": "FOREXCOM:XAUUSD", "title": "Gold"},
+            {"proName": "TVC:USOIL", "title": "WTI"},
+            {"proName": "BINANCE:BTCUSDT", "title": "BTC"},
+            {"proName": "BINANCE:ETHUSDT", "title": "ETH"},
+            {"proName": "FOREXCOM:SPXUSD", "title": "S&P 500"},
+            {"proName": "FOREXCOM:NSXUSD", "title": "Nasdaq"},
+            {"proName": "INDEX:NI225", "title": "Nikkei"},
+            {"proName": "FOREXCOM:DEU40", "title": "DAX"}
+        ],
+        "showSymbolLogo": true,
+        "isTransparent": false,
+        "displayMode": "adaptive",
+        "colorTheme": "dark",
+        "locale": "en"
+    }
+    </script>
+</div>
+
+<div class="container">
+
+    <div class="section-title">AI Market Briefing</div>
+    <div class="briefing-card">
+        <div class="briefing-header">
+            <div class="briefing-title" id="briefing-title">Loading Briefing...</div>
+            <div class="briefing-timestamp" id="briefing-timestamp"></div>
+        </div>
+        <div class="briefing-content" id="briefing-content">
+            <p style="color:#8b949e;">Fetching latest briefing...</p>
+        </div>
+    </div>
+
+    <div class="section-title">Forex — Your Watchlist</div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-header">Cross Rates</div>
+            <div class="tradingview-widget-container" style="height: 420px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-forex-cross-rates.js" async>
+                {
+                    "width": "100%",
+                    "height": 420,
+                    "currencies": ["EUR", "USD", "JPY", "GBP", "CAD", "AUD", "NZD", "CHF"],
+                    "isTransparent": true,
+                    "colorTheme": "dark",
+                    "locale": "en",
+                    "backgroundColor": "rgba(22, 27, 34, 0)"
+                }
+                </script>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Forex Heat Map</div>
+            <div class="tradingview-widget-container" style="height: 420px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-forex-heat-map.js" async>
+                {
+                    "width": "100%",
+                    "height": 420,
+                    "currencies": ["EUR", "USD", "JPY", "GBP", "CAD", "AUD", "NZD", "CHF"],
+                    "isTransparent": true,
+                    "colorTheme": "dark",
+                    "locale": "en",
+                    "backgroundColor": "rgba(22, 27, 34, 0)"
+                }
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Economic Calendar</div>
+    <div class="card">
+        <div class="card-header">Upcoming Events — High & Medium Impact</div>
+        <div class="tradingview-widget-container" style="height: 450px;">
+            <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+            {
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "width": "100%",
+                "height": 450,
+                "locale": "en",
+                "importanceFilter": "0,1",
+                "countryFilter": "ar,au,br,ca,cn,fr,de,in,id,it,jp,kr,mx,ru,sa,za,tr,gb,us,eu,nz,ch"
+            }
+            </script>
+        </div>
+    </div>
+
+    <div class="section-title">Global Markets</div>
+    <div class="grid-3">
+        <div class="card">
+            <div class="card-header">Indices & Stocks</div>
+            <div class="tradingview-widget-container" style="height: 520px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                {
+                    "colorTheme": "dark",
+                    "dateRange": "1D",
+                    "showChart": true,
+                    "locale": "en",
+                    "width": "100%",
+                    "height": 520,
+                    "isTransparent": true,
+                    "showFloatingTooltip": true,
+                    "plotLineColorGrowing": "rgba(88, 166, 255, 1)",
+                    "plotLineColorFalling": "rgba(248, 81, 73, 1)",
+                    "gridLineColor": "rgba(240, 243, 250, 0)",
+                    "scaleFontColor": "rgba(139, 148, 158, 1)",
+                    "belowLineFillColorGrowing": "rgba(88, 166, 255, 0.12)",
+                    "belowLineFillColorFalling": "rgba(248, 81, 73, 0.12)",
+                    "symbolActiveColor": "rgba(88, 166, 255, 0.12)",
+                    "tabs": [
+                        {
+                            "title": "Indices",
+                            "symbols": [
+                                {"s": "FOREXCOM:SPXUSD", "d": "S&P 500"},
+                                {"s": "FOREXCOM:NSXUSD", "d": "Nasdaq 100"},
+                                {"s": "FOREXCOM:DJI", "d": "Dow Jones"},
+                                {"s": "INDEX:NI225", "d": "Nikkei 225"},
+                                {"s": "FOREXCOM:DEU40", "d": "DAX"},
+                                {"s": "SPREADEX:FTSE", "d": "FTSE 100"},
+                                {"s": "FOREXCOM:HKG33", "d": "Hang Seng"},
+                                {"s": "FOREXCOM:UK100", "d": "UK 100"}
+                            ]
+                        },
+                        {
+                            "title": "US Stocks",
+                            "symbols": [
+                                {"s": "NASDAQ:AAPL"},
+                                {"s": "NASDAQ:MSFT"},
+                                {"s": "NASDAQ:NVDA"},
+                                {"s": "NASDAQ:GOOGL"},
+                                {"s": "NASDAQ:AMZN"},
+                                {"s": "NASDAQ:META"},
+                                {"s": "NASDAQ:TSLA"},
+                                {"s": "NYSE:JPM"}
+                            ]
+                        }
+                    ]
+                }
+                </script>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Commodities</div>
+            <div class="tradingview-widget-container" style="height: 520px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                {
+                    "colorTheme": "dark",
+                    "dateRange": "1D",
+                    "showChart": true,
+                    "locale": "en",
+                    "width": "100%",
+                    "height": 520,
+                    "isTransparent": true,
+                    "showFloatingTooltip": true,
+                    "plotLineColorGrowing": "rgba(240, 180, 41, 1)",
+                    "plotLineColorFalling": "rgba(248, 81, 73, 1)",
+                    "gridLineColor": "rgba(240, 243, 250, 0)",
+                    "scaleFontColor": "rgba(139, 148, 158, 1)",
+                    "belowLineFillColorGrowing": "rgba(240, 180, 41, 0.12)",
+                    "belowLineFillColorFalling": "rgba(248, 81, 73, 0.12)",
+                    "symbolActiveColor": "rgba(240, 180, 41, 0.12)",
+                    "tabs": [
+                        {
+                            "title": "Metals",
+                            "symbols": [
+                                {"s": "FOREXCOM:XAUUSD", "d": "Gold"},
+                                {"s": "FOREXCOM:XAGUSD", "d": "Silver"},
+                                {"s": "OANDA:XPTUSD", "d": "Platinum"},
+                                {"s": "OANDA:XPDUSD", "d": "Palladium"},
+                                {"s": "COMEX:HG1!", "d": "Copper"}
+                            ]
+                        },
+                        {
+                            "title": "Energy",
+                            "symbols": [
+                                {"s": "TVC:USOIL", "d": "WTI Crude"},
+                                {"s": "TVC:UKOIL", "d": "Brent Crude"},
+                                {"s": "NYMEX:NG1!", "d": "Natural Gas"},
+                                {"s": "NYMEX:RB1!", "d": "Gasoline"},
+                                {"s": "NYMEX:HO1!", "d": "Heating Oil"}
+                            ]
+                        },
+                        {
+                            "title": "Agriculture",
+                            "symbols": [
+                                {"s": "CBOT:ZW1!", "d": "Wheat"},
+                                {"s": "CBOT:ZC1!", "d": "Corn"},
+                                {"s": "CBOT:ZS1!", "d": "Soybeans"},
+                                {"s": "ICEUS:CC1!", "d": "Cocoa"},
+                                {"s": "ICEUS:KC1!", "d": "Coffee"},
+                                {"s": "ICEUS:SB1!", "d": "Sugar"}
+                            ]
+                        }
+                    ]
+                }
+                </script>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Crypto</div>
+            <div class="tradingview-widget-container" style="height: 520px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                {
+                    "colorTheme": "dark",
+                    "dateRange": "1D",
+                    "showChart": true,
+                    "locale": "en",
+                    "width": "100%",
+                    "height": 520,
+                    "isTransparent": true,
+                    "showFloatingTooltip": true,
+                    "plotLineColorGrowing": "rgba(247, 147, 26, 1)",
+                    "plotLineColorFalling": "rgba(248, 81, 73, 1)",
+                    "gridLineColor": "rgba(240, 243, 250, 0)",
+                    "scaleFontColor": "rgba(139, 148, 158, 1)",
+                    "belowLineFillColorGrowing": "rgba(247, 147, 26, 0.12)",
+                    "belowLineFillColorFalling": "rgba(248, 81, 73, 0.12)",
+                    "symbolActiveColor": "rgba(247, 147, 26, 0.12)",
+                    "tabs": [
+                        {
+                            "title": "Top Crypto",
+                            "symbols": [
+                                {"s": "BINANCE:BTCUSDT", "d": "Bitcoin"},
+                                {"s": "BINANCE:ETHUSDT", "d": "Ethereum"},
+                                {"s": "BINANCE:SOLUSDT", "d": "Solana"},
+                                {"s": "BINANCE:XRPUSDT", "d": "XRP"},
+                                {"s": "BINANCE:BNBUSDT", "d": "BNB"},
+                                {"s": "BINANCE:ADAUSDT", "d": "Cardano"},
+                                {"s": "BINANCE:DOGEUSDT", "d": "Dogecoin"},
+                                {"s": "BINANCE:AVAXUSDT", "d": "Avalanche"}
+                            ]
+                        }
+                    ]
+                }
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Market News</div>
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-header">Forex News</div>
+            <div class="tradingview-widget-container" style="height: 420px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                {
+                    "feedMode": "market",
+                    "market": "forex",
+                    "isTransparent": true,
+                    "displayMode": "regular",
+                    "width": "100%",
+                    "height": 420,
+                    "colorTheme": "dark",
+                    "locale": "en"
+                }
+                </script>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Global Stock News</div>
+            <div class="tradingview-widget-container" style="height: 420px;">
+                <div class="tradingview-widget-container__widget" style="height: 100%;"></div>
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-timeline.js" async>
+                {
+                    "feedMode": "all_symbols",
+                    "isTransparent": true,
+                    "displayMode": "regular",
+                    "width": "100%",
+                    "height": 420,
+                    "colorTheme": "dark",
+                    "locale": "en"
+                }
+                </script>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer">
+    World Finance Hub • Data by <a href="https://www.tradingview.com" target="_blank" rel="noopener">TradingView</a> • All times MST (UTC-7) • Auto-refreshes on page load
+</div>
+
+<script>
+function updateClock() {
+    const now = new Date();
+    const mstStr = now.toLocaleTimeString("en-US", {
+        timeZone: "America/Denver",
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+    document.getElementById('current-time').textContent = mstStr;
+
+    const utc = new Date();
+    const utcTime = utc.getUTCHours() * 60 + utc.getUTCMinutes();
+    const sessions = {
+        sydney: { open: 21*60, close: 6*60, id: 'session-sydney' },
+        tokyo: { open: 23*60, close: 8*60, id: 'session-tokyo' },
+        london: { open: 7*60, close: 16*60, id: 'session-london' },
+        newyork: { open: 13*60, close: 22*60, id: 'session-newyork' }
+    };
+    for (const [name, s] of Object.entries(sessions)) {
+        const el = document.getElementById(s.id);
+        let isOpen;
+        if (s.open > s.close) {
+            isOpen = utcTime >= s.open || utcTime < s.close;
+        } else {
+            isOpen = utcTime >= s.open && utcTime < s.close;
+        }
+        el.className = `session ${isOpen ? 'open' : ''}`;
+    }
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+async function loadBriefing() {
+    try {
+        const res = await fetch('briefing.json?t=' + Date.now());
+        if (!res.ok) throw new Error('not ok');
+        const data = await res.json();
+        document.getElementById('briefing-title').textContent = data.title || 'Market Briefing';
+        document.getElementById('briefing-timestamp').textContent = data.timestamp || '';
+        document.getElementById('briefing-content').innerHTML = data.content || '';
+    } catch(e) {
+        document.getElementById('briefing-title').textContent = 'Market Briefing';
+        document.getElementById('briefing-timestamp').textContent = '';
+        document.getElementById('briefing-content').innerHTML = '<p style="color:#8b949e;">First briefing arrives at 7:00 AM MST. Check back then.</p>';
+    }
+}
+loadBriefing();
+</script>
+
+</body>
+</html>
